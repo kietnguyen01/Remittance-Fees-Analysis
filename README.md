@@ -5,8 +5,7 @@ This project analyzes the remittance fees for different methods of sending money
 ## Table of Contents
 
 - [Installation](#installation)
-- [Examples](#examples)
-- [Dependencies](#dependencies)
+- [Usage](#usage)
 - [Acknowledgements](#acknowledgements)
 
 ## Installation

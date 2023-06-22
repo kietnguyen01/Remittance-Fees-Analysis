@@ -42,6 +42,8 @@ To use this project, you need to run the notebooks using Jupyter Notebook. You c
 This project uses data from the following sources:
 
 - [CoinGecko API](https://www.coingecko.com/en/api) - A free and comprehensive cryptocurrency API that provides market data, exchange rates, historical data, and more.
+- [Messari](https://messari.io/) - A platform that offers crypto research, data, and tools for professionals, investors, and institutions.
+- [BitInfoCharts](https://bitinfocharts.com/) - A service that offers interactive charts and indicators for Bitcoin and other cryptocurrencies.
 
 This project also references code from the following sources:
 

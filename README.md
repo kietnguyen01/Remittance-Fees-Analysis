@@ -47,6 +47,8 @@ This project uses data from the following sources:
 - [Messari](https://messari.io/) - A platform that offers crypto research, data, and tools for professionals, investors, and institutions.
 - [BitInfoCharts](https://bitinfocharts.com/) - A service that offers interactive charts and indicators for Bitcoin and other cryptocurrencies.
 - [Owlracle](https://owlracle.info/eth) - An open-source gas oracle running predictions for multiple blockchain networks.
+- [World Bank](https://data.worldbank.org/) - Open global development data from the World Bank.
+- [KNOMAD](https://www.knomad.org/data/remittances) - a brain trust for the global migration community.
 
 This project also references code from the following sources:
 

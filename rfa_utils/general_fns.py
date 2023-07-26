@@ -1,6 +1,7 @@
 import os
 import xlsxwriter
 import polars as pl
+import pandas as pd
 from typing import Any, Callable
 
 
@@ -30,7 +31,7 @@ def import_excel(path: str, names: list):
             sheet_name=name,
             read_csv_options={
                 'infer_schema_length': 2000,
-                'dtypes': {'date': pl.Date}
+                'dtypes': {'date': pl.Datetime},
             }
         )
     return data

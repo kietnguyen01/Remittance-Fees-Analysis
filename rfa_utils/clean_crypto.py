@@ -60,20 +60,23 @@ def mf_impute(df: pd.DataFrame) -> pd.DataFrame:
     return kernel.complete_data()
 
 
-def impute_dfs(dfs: dict) -> dict:
-    """Impute missing values in dataframes of a dict"""
+def impute_dfs(dfs: dict, ignore: list = []) -> dict:
+    """Impute missing values in dataframes of a dict, except for those in the ignore list"""
     # Convert Polars to pandas
     pandas_dfs = {k: df.to_pandas() for k, df in dfs.items()}
-
     # Impute each dataframe
     imputed = {}
     for k, df in pandas_dfs.items():
-        date_series = df['date']  # Get date column as a series
-        df_no_date = df.drop('date', axis=1)
-        df_imputed = mf_impute(df_no_date)
-
-        # Concatenate the date back to the imputed dataframe
-        imputed[k] = pd.concat([date_series, df_imputed], axis=1)
-
+        # Check if the dataframe name is in the ignore list
+        if k in ignore:
+            # Skip the imputation and add the original dataframe to the imputed dictionary
+            imputed[k] = df
+        else:
+            # Proceed with the imputation as usual
+            date_series = df['date']  # Get date column as a series
+            df_no_date = df.drop('date', axis=1)
+            df_imputed = mf_impute(df_no_date)
+            # Concatenate the date back to the imputed dataframe
+            imputed[k] = pd.concat([date_series, df_imputed], axis=1)
     # Convert pandas to Polars
     return {k: pl.from_pandas(df) for k, df in imputed.items()}

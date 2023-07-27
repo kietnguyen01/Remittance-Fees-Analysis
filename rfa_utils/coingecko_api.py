@@ -40,10 +40,48 @@ def extract_json(data: dict) -> dict:
     return data_points
 
 
+def create_new_row(date: datetime.date) -> pl.DataFrame:
+    """Create a new row with the given date and null values for the other columns"""
+    new_row = pl.DataFrame({
+        'date': [date],
+        'prices': [None],
+        'market_caps': [None],
+        'total_volumes': [None]
+    })
+    # Cast all columns except date to f64
+    new_row = new_row.select([pl.col('date'), *[pl.col(c).cast(pl.Float64) for c in new_row.columns[1:]]])
+    return new_row
+
+
+def prepend_new_row(df: pl.DataFrame, start: str) -> pl.DataFrame:
+    """Prepend a new row with the desired start date if the first date is not equal to the desired start date"""
+    # Get the date series from the dataframe
+    date_series = df['date']
+    # Check if first date is equal to desired start date
+    desired_date = datetime.strptime(start, '%Y/%m/%d').date()
+    if date_series[0] != desired_date:
+        # Create a new row with desired date
+        new_row = create_new_row(desired_date)
+        # Prepend new row to dataframe
+        df = pl.concat([new_row, df])
+    return df
+
+
 def fill_date(df: pl.DataFrame):
     """Fill in missing date row with null values"""
     df = df.set_sorted('date')
     df = df.upsample(time_column='date', every='1d')
+    return df
+
+
+def replace_zeros_with_nulls(df: pl.DataFrame, column: str) -> pl.DataFrame:
+    """Replace any zeros in the given column with null values"""
+    # Get the series from the dataframe
+    series = df[column]
+    # Apply a lambda function to replace zeros with nulls
+    series = series.apply(lambda x: None if x == 0 else x)
+    # Replace the column in the dataframe with the modified series
+    df = df.with_columns(series.alias(column))
     return df
 
 
@@ -58,8 +96,13 @@ def create_df(name: str, currency: str, start: str, end: str) -> pl.DataFrame:
     df = df.drop('timestamps')
     # Reorder date column to the first position
     df = df.select(['date', *df.columns[:-1]])
+    # Prepend a new row if needed
+    df = prepend_new_row(df, start)
     # Fill in any missing rows
     df = fill_date(df)
+    # Replace any zeros with nulls in every column except date
+    for column in df.columns[1:]:
+        df = replace_zeros_with_nulls(df, column)
     return df
 
 

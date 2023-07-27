@@ -26,8 +26,10 @@ def volumes_lineplot(dfs: dict) -> None:
         if token != 'fees':
             df = dfs[token]
             df_volumes[token] = df['total_volumes']
+    # Set date index and resample to monthly
     df_volumes.index = pd.date_range(start='2019-01-01', end='2022-12-31', freq='D', name='date')
     df_volumes = df_volumes.resample('M').mean()
+    # Set plot parameters
     plt.figure(figsize=(14, 8))
     sns.lineplot(data=df_volumes)
     plt.xlabel('Date')

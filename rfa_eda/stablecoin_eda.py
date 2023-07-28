@@ -17,6 +17,29 @@ def fees_stats(df: pd.DataFrame) -> None:
     print(tabulate(stats_df, headers='keys', tablefmt='fancy_grid', floatfmt='.3f'))
 
 
+def fees_plots(df: pd.DataFrame) -> None:
+    """Plot the transaction fees over time with a line plot and as a box plot"""
+    # Create a figure with two subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    # Group the data by week and calculate the mean of transaction fees
+    df_weekly = df.groupby(pd.Grouper(key='date', freq='W'))['transaction_fees'].mean().reset_index()
+    # Plot the monthly data with lineplot
+    sns.lineplot(data=df_weekly, x='date', y='transaction_fees', label='Transaction Fees', ax=ax1)
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('Transaction Fees')
+    ax1.set_title('Transaction Fees over Time')
+    ax1.tick_params(axis='x', rotation=15)
+    ax1.legend()
+    # Plot the box plot on the second subplot
+    sns.boxplot(data=df, y='transaction_fees', showfliers=False, ax=ax2)
+    ax2.set_ylabel('Transaction Fees')
+    ax2.set_title('Box Plot of Transaction Fees')
+    # Adjust the spacing between the subplots
+    plt.tight_layout()
+    # Show the figure
+    plt.show()
+
+
 def volumes_lineplot(dfs: dict) -> None:
     """Plot the total volumes of all stablecoins in a line plot"""
     # Create an empty dataframe to store the total volumes
@@ -26,9 +49,9 @@ def volumes_lineplot(dfs: dict) -> None:
         if token != 'fees':
             df = dfs[token]
             df_volumes[token] = df['total_volumes']
-    # Set date index and resample to monthly
+    # Set date index and resample to weekly
     df_volumes.index = pd.date_range(start='2019-01-01', end='2022-12-31', freq='D', name='date')
-    df_volumes = df_volumes.resample('M').mean()
+    df_volumes = df_volumes.resample('W').mean()
     # Set plot parameters
     plt.figure(figsize=(14, 8))
     sns.lineplot(data=df_volumes)

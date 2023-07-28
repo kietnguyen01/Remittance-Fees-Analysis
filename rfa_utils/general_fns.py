@@ -30,7 +30,7 @@ def import_excel(path: str, names: list):
             sheet_name=name,
             read_csv_options={
                 'infer_schema_length': 2000,
-                'dtypes': {'date': pl.Datetime},
+                'try_parse_dates': True
             }
         )
     return data

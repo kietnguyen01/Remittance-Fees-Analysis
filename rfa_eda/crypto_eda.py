@@ -100,7 +100,7 @@ def fees_stats(dfs: dict) -> None:
 
 
 def fees_scatterplots(dfs: dict) -> None:
-    """Plot the scatterplots of transaction fees against transactions count and set hue to transaction value"""
+    """Plot the scatterplots of transaction fees against 24h volume and set hue to transaction value"""
     # Create two subplots per row
     fig, axes = plt.subplots(nrows=len(dfs) // 2 + len(dfs) % 2, ncols=2, figsize=(15, 20))
     # Flatten the axes array
@@ -111,16 +111,16 @@ def fees_scatterplots(dfs: dict) -> None:
         i = list(dfs.keys()).index(name)
         ax = axes[i]
         fees_col = get_fees_column(df)
-        transactions = df['transactions_count']
+        volume = df['24h_volume']
         value_col = get_value_column(df)
-        sns.regplot(x=transactions, y=fees_col, data=df, ax=ax)
+        sns.regplot(x=volume, y=fees_col, data=df, ax=ax)
         if value_col:
-            sns.scatterplot(x=transactions, y=fees_col, data=df, ax=ax, color=colors[i], hue=value_col)
+            sns.scatterplot(x=volume, y=fees_col, data=df, ax=ax, color=colors[i], hue=value_col)
         else:
-            sns.scatterplot(x=transactions, y=fees_col, data=df, ax=ax, color=colors[i])
+            sns.scatterplot(x=volume, y=fees_col, data=df, ax=ax, color=colors[i])
         ax.set_title(name.upper())
-        ax.set_xlabel('transactions_count')
+        ax.set_xlabel('24h_volume')
         ax.set_ylabel(fees_col)
-    fig.suptitle('Transaction Fees vs Transactions Count')
+    fig.suptitle('Transaction Fees vs 24h Volume')
     plt.tight_layout()
     plt.show()

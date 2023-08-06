@@ -67,7 +67,6 @@ def corr_heatmaps(dfs: dict) -> None:
         # Get index position of token name
         i = list(dfs.keys()).index(name)
         ax = axes[i]
-        df = df.drop('date', axis=1)
         corr_matrix = df.corr()
         sns.heatmap(corr_matrix, annot=True, ax=ax, cmap='mako_r')
         ax.set_title(name.upper())
@@ -79,7 +78,6 @@ def corr_heatmaps(dfs: dict) -> None:
 def summary_stats(dfs: dict) -> None:
     """Print the summary statistics for each dataframe"""
     for name, df in dfs.items():
-        df = df.drop('date', axis=1)
         print(f'>>> {name.upper()}')
         print(tabulate(df.describe(), headers='keys', tablefmt='fancy_grid', floatfmt='.3f'))
 

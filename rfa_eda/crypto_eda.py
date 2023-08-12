@@ -3,6 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 
+sns.set(style="whitegrid") 
+
 
 def get_fees_column(df: pd.DataFrame) -> str:
     """Get transaction fees column name from dataframe"""

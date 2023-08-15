@@ -24,15 +24,14 @@ def fees_plots(df: pd.DataFrame) -> None:
     # Group the data by week and calculate the mean of transaction fees
     df_weekly = df.groupby(pd.Grouper(key='date', freq='W'))['transaction_fees'].mean().reset_index()
     # Plot the monthly data with lineplot
-    sns.lineplot(data=df_weekly, x='date', y='transaction_fees', label='Transaction Fees', ax=ax1)
+    sns.lineplot(data=df_weekly, x='date', y='transaction_fees', ax=ax1)
     ax1.set_xlabel('Date')
-    ax1.set_ylabel('Transaction Fees')
+    ax1.set_ylabel('Fees (Dollar)')
     ax1.set_title('Transaction Fees over Time')
     ax1.tick_params(axis='x', rotation=15)
-    ax1.legend()
     # Plot the box plot on the second subplot
     sns.boxplot(data=df, y='transaction_fees', showfliers=False, ax=ax2)
-    ax2.set_ylabel('Transaction Fees')
+    ax2.set_ylabel('Fees (Dollar)')
     ax2.set_title('Box Plot of Transaction Fees')
     # Adjust the spacing between the subplots
     plt.tight_layout()
@@ -41,14 +40,14 @@ def fees_plots(df: pd.DataFrame) -> None:
 
 
 def volumes_lineplot(dfs: dict) -> None:
-    """Plot the total volumes of all stablecoins in a line plot"""
+    """Plot the 24 volumes of all stablecoins in a line plot"""
     # Create an empty dataframe to store the total volumes
     df_volumes = pd.DataFrame()
     # Loop and append each token's total volume
     for token in dfs.keys():
         if token != 'fees':
             df = dfs[token]
-            df_volumes[token] = df['total_volumes']
+            df_volumes[token] = df['24h_volume']
     # Set date index and resample to weekly
     df_volumes.index = pd.date_range(start='2019-01-01', end='2022-12-31', freq='D', name='date')
     df_volumes = df_volumes.resample('W').mean()
@@ -56,8 +55,9 @@ def volumes_lineplot(dfs: dict) -> None:
     plt.figure(figsize=(14, 8))
     sns.lineplot(data=df_volumes)
     plt.xlabel('Date')
-    plt.ylabel('Total Volume')
-    plt.title('Total Volumes of Stablecoins')
+    plt.ylabel('24h Volume')
+    plt.title('24h Volumes of Stablecoins (Weekly)')
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     plt.yscale('log')
     plt.show()
 
@@ -71,7 +71,7 @@ def mcaps_volumes_scatterplots(dfs: dict) -> None:
     for token, ax, color in zip(dfs.keys(), axes.flatten(), colors):
         if token != 'fees':
             df = dfs[token]
-            sns.scatterplot(x='market_caps', y='total_volumes', data=df, ax=ax, color=color)
+            sns.scatterplot(x='market_caps', y='24h_volume', data=df, ax=ax, color=color)
             ax.set_title(token)
     axes[-1, -1].remove()  # Remove the empty subplot
     fig.tight_layout()
